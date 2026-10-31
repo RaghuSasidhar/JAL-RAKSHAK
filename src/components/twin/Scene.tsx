@@ -203,7 +203,7 @@ function Packets() {
   useMemo(() => {
     const all = [...PATH, ...PATH2.slice(1)];
     for (let i = 0; i < all.length - 1; i++)
-      curve.add(new THREE.LineCurve3(new THREE.Vector3(...all[i]), new THREE.Vector3(...all[i + 1])));
+      curve.add(new THREE.LineCurve3(new THREE.Vector3(...all[i]!), new THREE.Vector3(...all[i + 1]!)));
   }, [curve]);
   const live = useRef<{ t: number; delay: number }[]>([]);
   const prev = useRef(burst);
@@ -262,7 +262,7 @@ function CloudAndPhone() {
         <RoundedBox args={[1.2, 0.5, 1.2]} radius={0.08} position={[0, -0.95, 0]}>
           <meshStandardMaterial color={P.body} />
         </RoundedBox>
-        {[[-0.25, 0, 0, 0.3], [0.15, 0.1, 0, 0.36], [0.4, -0.05, 0, 0.24]].map(([x, y, z, r], i) => (
+        {([[-0.25, 0, 0, 0.3], [0.15, 0.1, 0, 0.36], [0.4, -0.05, 0, 0.24]] as const).map(([x, y, z, r], i) => (
           <mesh key={i} position={[x, y + 0.2, z]}>
             <sphereGeometry args={[r, 24, 24]} />
             <meshStandardMaterial color={sendLed === "offline" ? "#8a8f95" : "#f2f4f6"} roughness={0.7} />

@@ -83,7 +83,7 @@ export const useSim = create<SimStore>((set, get) => ({
       e = r.state;
       if (r.reading) hist.push(r.reading);
     }
-    set({ engine: e, history: hist, latest: hist[hist.length - 1] });
+    set({ engine: e, history: hist, latest: hist[hist.length - 1] ?? null });
     get().tick();
   },
 
@@ -166,7 +166,7 @@ export const useSim = create<SimStore>((set, get) => ({
       history = [...history, r].slice(-300);
     }
     patch.history = history;
-    patch.latest = delivered[delivered.length - 1];
+    patch.latest = delivered[delivered.length - 1] ?? null;
     patch.evals = evals;
     patch.raised = raised;
     patch.alerts = alerts;

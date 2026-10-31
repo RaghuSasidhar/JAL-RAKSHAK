@@ -52,7 +52,7 @@ export function thresholdStatus(ind: Indicator, v: number): Status {
 const median = (a: number[]) => {
   const s = [...a].sort((x, y) => x - y);
   const m = s.length >> 1;
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
 };
 
 export const ANOMALY = { window: 60, minN: 48, z: 4, madFloor: { ph: 0.02, turbidity_ntu: 0.05, tds_mgl: 2, temp_c: 0.1 } };
