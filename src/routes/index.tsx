@@ -83,13 +83,13 @@ function Index() {
         <LeftPanel />
         <section className="relative min-h-[460px] lg:min-h-[560px]">
           {view === "twin" ? <Scene /> : <Schematic />}
-          <div className="absolute bottom-2 left-2 flex gap-2">
-            <button onClick={() => setView("twin")} aria-label="3D view" className={`panel grid size-9 place-items-center ${view === "twin" ? "text-glow" : ""}`}>
-              <Box className="size-4" />
-            </button>
-            <button onClick={() => setView("schematic")} aria-label="Schematic view" className={`panel grid size-9 place-items-center ${view === "schematic" ? "text-glow" : ""}`}>
-              <Network className="size-4" />
-            </button>
+          <div className="absolute bottom-2 left-2 flex rounded-lg border border-border bg-card p-1 text-[11px] uppercase tracking-wider">
+            {(["twin", "schematic"] as const).map((v) => (
+              <button key={v} onClick={() => setView(v)} className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 ${view === v ? "bg-foreground text-background" : "text-muted-foreground"}`}>
+                {v === "twin" ? <Box className="size-3.5" /> : <Network className="size-3.5" />}
+                {v === "twin" ? "Board view" : "Schematic view"}
+              </button>
+            ))}
           </div>
         </section>
         <RightPanel />
@@ -97,6 +97,9 @@ function Index() {
 
       <BottomCards />
       <PacketInspector />
+      <footer className="mt-4 text-center text-[11px] text-muted-foreground">
+        Simulated data · Early-warning demo, not a water-safety certificate. Limits are placeholders for expert review.
+      </footer>
       <Notification />
       <IndicatorDetail />
     </div>
