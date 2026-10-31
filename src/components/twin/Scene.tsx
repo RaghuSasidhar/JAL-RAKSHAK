@@ -141,14 +141,14 @@ function FlowCell() {
   );
 }
 
-function Pin({ ind, pos }: { ind: Indicator; pos: [number, number, number] }) {
+function Pin({ ind }: { ind: Indicator }) {
   const v = useSim((s) => s.latest?.[ind]);
   const ev = useSim((s) => s.evals[ind]);
   const select = useSim((s) => s.select);
   const offline = useSim((s) => s.overall === "nodata");
   const tone = offline ? "nodata" : ev.status;
   return (
-    <Html position={pos} center distanceFactor={undefined} zIndexRange={[10, 0]}>
+    <div ref={(el) => { pinEls[ind] = el; }} className="absolute left-0 top-0 z-10" style={{ willChange: "transform" }}>
       <button
         onClick={() => select(ind)}
         className="group flex items-center gap-2 whitespace-nowrap"
@@ -166,8 +166,31 @@ function Pin({ ind, pos }: { ind: Indicator; pos: [number, number, number] }) {
           {tone === "device" ? "🔧 Check device" : `⚠ ${ev.reason}`}
         </div>
       )}
-    </Html>
+    </div>
   );
+}
+
+const PIN_POS: Record<Indicator, [number, number, number]> = {
+  ph: [-0.3, 1.9, 0.9],
+  turbidity_ntu: [-0.6, 0.6, 0.9],
+  tds_mgl: [1.7, 1.1, 0.2],
+  temp_c: [1.9, 0.3, -0.1],
+};
+const pinEls: Partial<Record<Indicator, HTMLDivElement | null>> = {};
+
+function Projector() {
+  const v = useMemo(() => new THREE.Vector3(), []);
+  useFrame(({ camera, size }) => {
+    (Object.keys(PIN_POS) as Indicator[]).forEach((k) => {
+      const el = pinEls[k];
+      if (!el) return;
+      v.set(...PIN_POS[k]).project(camera);
+      const x = ((v.x + 1) / 2) * size.width - 10;
+      const y = ((1 - v.y) / 2) * size.height - 10;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+    });
+  });
+  return null;
 }
 
 function Packets() {
@@ -276,7 +299,7 @@ export default function Scene() {
   const tdsSt = useSim((s) => s.evals.tds_mgl.status);
   const tankStatus = turbSt === "strong" || turbSt === "concern" ? turbSt : tdsSt === "concern" || tdsSt === "strong" ? tdsSt : null;
   return (
-    <div className="absolute inset-0" data-scene-ready={ready ? "true" : undefined}>
+    <div className="absolute inset-0 overflow-hidden" data-scene-ready={ready ? "true" : undefined}>
       <Canvas shadows dpr={[1, 2]}>
         <OrthographicCamera makeDefault position={[9, 8, 9]} zoom={70} near={-50} far={100} onUpdate={(c) => c.lookAt(0.3, 1.2, 0.3)} />
         <ambientLight intensity={0.4} />
@@ -305,12 +328,12 @@ export default function Scene() {
         <Line points={PATH2} color={P.glow} lineWidth={1.5} transparent opacity={0.7} dashed dashSize={0.1} gapSize={0.08} />
         <Packets />
 
-        <Pin ind="ph" pos={[-0.3, 1.9, 0.9]} />
-        <Pin ind="turbidity_ntu" pos={[-0.6, 0.6, 0.9]} />
-        <Pin ind="tds_mgl" pos={[1.7, 1.1, 0.2]} />
-        <Pin ind="temp_c" pos={[1.9, 0.3, -0.1]} />
+        <Projector />
         <Ready onReady={() => setReady(true)} />
       </Canvas>
+      {(Object.keys(PIN_POS) as Indicator[]).map((k) => (
+        <Pin key={k} ind={k} />
+      ))}
     </div>
   );
 }
