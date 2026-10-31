@@ -60,3 +60,7 @@ src/
 zustand store is the only glue, so a real device backend can replace the
 simulator without touching the UI. Values that change every frame live in refs
 inside the 3D scene, not in the store.
+
+## Documentation
+
+See [docs/TECHNICAL_DESIGN.md](docs/TECHNICAL_DESIGN.md) for architecture diagrams, data flow, detection design and the future deployment plan.
