@@ -1,13 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Bell, Box, Droplets, Moon, Network, Send, Sun, X } from "lucide-react";
+import { Bell, Box, ShieldCheck, Droplets, Moon, Network, Send, Sun, X } from "lucide-react";
 import Scene from "@/components/twin/Scene";
 import Schematic from "@/components/twin/Schematic";
 import { StatusChip } from "@/components/twin/StatusChip";
 import { useSim, type AlertState } from "@/store/sim";
 import { LABEL, STATUS_META, THRESHOLDS, UNIT, type Status } from "@/detection";
 import { INDICATORS, SCENARIOS, type Indicator } from "@/simulator/types";
-import { INTERVAL_S } from "@/simulator/engine";
+import { useTicker } from "@/hooks/use-ticker";
 
 export const Route = createFileRoute("/")({
   ssr: false,
@@ -23,15 +23,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
-
-function useTicker() {
-  const { init, tick, speed } = useSim();
-  useEffect(() => init(), [init]);
-  useEffect(() => {
-    const id = setInterval(tick, (INTERVAL_S * 1000) / speed);
-    return () => clearInterval(id);
-  }, [tick, speed]);
-}
 
 const ago = (ts?: string, simMs?: number) => {
   if (!ts || !simMs) return "—";
@@ -77,6 +68,9 @@ function Index() {
           <Bell className="size-4" />
           {alerts > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-destructive text-[9px] text-destructive-foreground">{alerts}</span>}
         </span>
+        <Link to="/officials" className="flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-2 text-xs font-medium text-background">
+          <ShieldCheck className="size-4" /> Officials dashboard
+        </Link>
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[250px_1fr_280px]">
