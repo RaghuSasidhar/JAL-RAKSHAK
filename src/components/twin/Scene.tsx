@@ -164,11 +164,12 @@ function Pin({ ind }: { ind: Indicator }) {
   );
 }
 
+const off = (a: [number, number, number], d: [number, number, number]): [number, number, number] => [a[0] + d[0], a[1] + d[1], a[2] + d[2]];
 const PIN_POS: Record<Indicator, [number, number, number]> = {
-  ph: moduleWorld("ph", 0.9),
-  turbidity_ntu: moduleWorld("turbidity_ntu", 1.1),
-  tds_mgl: moduleWorld("tds_mgl", 0.5),
-  temp_c: moduleWorld("temp_c", 0.3),
+  ph: off(moduleWorld("ph"), [-0.7, 1.1, 0.4]),
+  turbidity_ntu: off(moduleWorld("turbidity_ntu"), [0.4, 1.5, -0.7]),
+  tds_mgl: off(moduleWorld("tds_mgl"), [-0.8, 0.2, 1.0]),
+  temp_c: off(moduleWorld("temp_c"), [0.2, 0.1, 1.1]),
 };
 const pinEls: Partial<Record<Indicator, HTMLDivElement | null>> = {};
 
@@ -295,7 +296,7 @@ export default function Scene() {
   return (
     <div className="absolute inset-0 overflow-hidden" data-scene-ready={ready ? "true" : undefined}>
       <Canvas shadows dpr={[1, 2]}>
-        <OrthographicCamera makeDefault position={[9, 8, 9]} zoom={70} near={-50} far={100} onUpdate={(c) => c.lookAt(0.3, 1.2, 0.3)} />
+        <OrthographicCamera makeDefault position={[9, 8, 9]} zoom={78} near={-50} far={100} onUpdate={(c) => c.lookAt(0.3, 1.2, 0.3)} />
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 10, 4]} intensity={1.6} castShadow shadow-mapSize={[1024, 1024]} />
         <Environment resolution={64}>

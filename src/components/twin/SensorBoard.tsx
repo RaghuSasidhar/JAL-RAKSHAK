@@ -7,8 +7,9 @@ import type { Indicator } from "@/simulator/types";
 import type { Status } from "@/detection";
 
 /** Board centre in world space. Modules are laid out in local coords on top of it. */
-export const BOARD_POS: [number, number, number] = [0.9, 0.25, 1.6];
+export const BOARD_POS: [number, number, number] = [0.7, 0.05, 1.7];
 const TOP = 0.06;
+export const BOARD_SCALE = 1.3;
 
 // Colour per board part (real-world module colours).
 const C = {
@@ -39,9 +40,10 @@ export const MODULES: Record<Indicator, { pos: [number, number, number]; size: [
 /** World position just above a module (for callout pins and probe cables). */
 export function moduleWorld(ind: Indicator, lift = 0): [number, number, number] {
   const m = MODULES[ind].pos;
-  return [BOARD_POS[0] + m[0], BOARD_POS[1] + TOP + 0.1 + lift, BOARD_POS[2] + m[2]];
+  const k = BOARD_SCALE;
+  return [BOARD_POS[0] + m[0] * k, BOARD_POS[1] + (TOP + 0.1) * k + lift, BOARD_POS[2] + m[2] * k];
 }
-export const ESP_ANTENNA: [number, number, number] = [BOARD_POS[0] + 1.25, BOARD_POS[1] + 0.2, BOARD_POS[2] - 0.45];
+export const ESP_ANTENNA: [number, number, number] = [BOARD_POS[0] + 1.3 * BOARD_SCALE, BOARD_POS[1] + 0.25, BOARD_POS[2] - 0.45 * BOARD_SCALE];
 
 const flagHex = (s: Status) => (s === "strong" ? "#ef4444" : s === "concern" ? "#f59e0b" : s === "device" ? "#7c93b0" : null);
 
@@ -207,7 +209,7 @@ const WIRE_COLORS = ["#ef4444", "#facc15", "#3b82f6", "#22c55e"];
 export function SensorBoard() {
   const inds = Object.keys(MODULES) as Indicator[];
   return (
-    <group position={BOARD_POS}>
+    <group position={BOARD_POS} scale={BOARD_SCALE}>
       {/* main PCB */}
       <RoundedBox args={[3.3, 0.08, 1.9]} radius={0.03} castShadow receiveShadow>
         <meshStandardMaterial color={C.pcb} roughness={0.6} />
