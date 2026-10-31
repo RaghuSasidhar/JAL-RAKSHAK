@@ -29,19 +29,6 @@ export default function Schematic() {
       <rect x="330" y="200" width="110" height="110" rx="10" className="fill-card stroke-border" />
       <text x="385" y="190" textAnchor="middle" className="fill-muted-foreground text-[11px] uppercase tracking-widest">Flow cell</text>
       {INDICATORS.map((ind, i) => (
-        <g key={ind} transform={`translate(${470 + (i % 2) * 150}, ${240 + Math.floor(i / 2) * 0})`} />
-      ))}
-      {INDICATORS.map((ind, i) => {
-        const x = 500 + (i % 2) * 145;
-        const y = 250 + Math.floor(i / 2) * 0 - (i < 2 ? 0 : -0);
-        const gx = 260 + i * 130;
-        return (
-          <g key={ind} transform={`translate(${gx - 200}, 0)`}>
-            <circle cx={x - 300 + i * 0} cy={y + 150} r="0" />
-          </g>
-        );
-      })}
-      {INDICATORS.map((ind, i) => (
         <g key={ind} transform={`translate(${520 + (i % 2) * 130}, ${250 + Math.floor(i / 2) * 90})`}>
           <circle r="34" className={`fill-card st-ring-${evals[ind].status}`} strokeWidth={3} stroke={`var(--st-${evals[ind].status})`} />
           <text textAnchor="middle" y="-4" className="fill-foreground font-num text-[13px]">{latest?.[ind] ?? "—"}</text>
