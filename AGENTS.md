@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Simulator (`src/simulator`) and detection rules (`src/detection`) stay React-free pure modules; the zustand store in `src/store/sim.ts` is the only glue, so a real backend can replace the simulator.
