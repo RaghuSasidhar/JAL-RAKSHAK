@@ -296,7 +296,7 @@ export default function Scene() {
   return (
     <div className="absolute inset-0 overflow-hidden" data-scene-ready={ready ? "true" : undefined}>
       <Canvas shadows dpr={[1, 2]}>
-        <OrthographicCamera makeDefault position={[9, 8, 9]} zoom={78} near={-50} far={100} onUpdate={(c) => c.lookAt(0.3, 1.2, 0.3)} />
+        <OrthographicCamera makeDefault position={[9, 8, 9]} zoom={78} near={-50} far={100} onUpdate={(c) => c.lookAt(0.4, 1.6, 0.6)} />
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 10, 4]} intensity={1.6} castShadow shadow-mapSize={[1024, 1024]} />
         <Environment resolution={64}>
