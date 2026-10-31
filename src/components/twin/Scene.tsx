@@ -531,7 +531,7 @@ function Rig({ tilt, zoomMul, compact }: { tilt: React.RefObject<THREE.Group | n
   const { camera, size, pointer } = useThree();
   useFrame((_, dRaw) => {
     const d = Math.min(dRaw, 0.05);
-    const fit = compact ? Math.min(size.width / 5.6, size.height / 4.2) : Math.min(size.width / 9.6, size.height / 5.6);
+    const fit = compact ? Math.min(size.width / 6.6, size.height / 4.6) : Math.min(size.width / 9.6, size.height / 5.6);
     const cam = camera as THREE.OrthographicCamera;
     cam.zoom += (fit * zoomMul.current - cam.zoom) * Math.min(1, d * 8);
     cam.updateProjectionMatrix();
@@ -584,7 +584,7 @@ export default function Scene() {
   return (
     <div ref={wrap} className="absolute inset-0 overflow-hidden" data-scene-ready={ready ? "true" : undefined}>
       <Canvas shadows dpr={[1, 2]}>
-        <OrthographicCamera makeDefault position={[9, 8, 9]} zoom={80} near={-50} far={100} onUpdate={(c) => c.lookAt(compact ? 0 : 0.3, 0, compact ? 0.3 : -0.3)} />
+        <OrthographicCamera makeDefault position={[9, 8, 9]} zoom={80} near={-50} far={100} onUpdate={(c) => c.lookAt(compact ? 0.1 : 0.3, compact ? -1.6 : 0, compact ? 0.25 : -0.3)} />
         <ambientLight intensity={offline ? 0.12 : 0.45} />
         <directionalLight position={[4, 10, 6]} intensity={offline ? 0.4 : 1.5} castShadow shadow-mapSize={[1024, 1024]} />
         <Environment resolution={64}>
