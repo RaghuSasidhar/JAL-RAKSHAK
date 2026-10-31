@@ -5,11 +5,12 @@ import * as THREE from "three";
 import { useSim } from "@/store/sim";
 import type { Indicator } from "@/simulator/types";
 import { LABEL, UNIT, type Status } from "@/detection";
+import { ESP_ANTENNA, SensorBoard, moduleWorld } from "./SensorBoard";
 
 // Material palette for the 3D model (matte industrial, like the reference renders).
 const P = {
-  slab: "#d9dcdf",
-  slabEdge: "#2a2e33",
+  slab: "#3a3f46",
+  slabEdge: "#121417",
   body: "#eef0f2",
   metal: "#9aa1a8",
   dark: "#30353b",
@@ -25,16 +26,14 @@ const statusHex = (s: Status) =>
   s === "strong" ? P.red : s === "concern" ? P.amber : s === "device" ? P.device : null;
 
 // Data path: enclosure -> cloud -> phone
+const CLOUD: [number, number, number] = [2.9, 1.5, -1.6];
 const PATH: [number, number, number][] = [
-  [0.6, 2.3, -0.6],
-  [0.6, 3.3, -0.6],
-  [2.6, 3.3, -0.6],
-  [2.6, 1.6, 1.4],
+  ESP_ANTENNA,
+  [ESP_ANTENNA[0], 3.2, ESP_ANTENNA[2]],
+  [CLOUD[0], 3.2, CLOUD[2]],
+  CLOUD,
 ];
-const PATH2: [number, number, number][] = [
-  [2.6, 1.6, 1.4],
-  [2.6, 0.5, 2.6],
-];
+const PATH2: [number, number, number][] = [CLOUD, [3.2, 0.5, 0.3]];
 
 function Tank({ status }: { status: Status | null }) {
   const legs: [number, number][] = [
@@ -102,19 +101,6 @@ function FlowCell() {
   });
   return (
     <group position={[0.6, 0, -0.6]}>
-      {/* back wall */}
-      <mesh position={[0, 1.6, -0.55]} receiveShadow castShadow>
-        <boxGeometry args={[2.2, 3.2, 0.15]} />
-        <meshStandardMaterial color={P.body} roughness={0.8} />
-      </mesh>
-      {/* sealed enclosure */}
-      <RoundedBox args={[1, 0.8, 0.45]} radius={0.06} position={[0, 2.2, -0.2]} castShadow>
-        <meshStandardMaterial color={offline ? P.dark : "#f7f8f9"} roughness={0.5} />
-      </RoundedBox>
-      <mesh position={[0.3, 2.35, 0.03]}>
-        <circleGeometry args={[0.04, 16]} />
-        <meshBasicMaterial color={offline ? "#555" : P.glow} />
-      </mesh>
       {/* flow cell */}
       <mesh position={[0, 0.85, 0]}>
         <cylinderGeometry args={[0.45, 0.45, 0.9, 40]} />
@@ -133,7 +119,15 @@ function FlowCell() {
               <cylinderGeometry args={[0.035, 0.035, 0.9, 12]} />
               <meshStandardMaterial color={c} emissive={statusHex(st) ?? "#000"} emissiveIntensity={statusHex(st) ? 0.6 : 0} />
             </mesh>
-            <Line points={[[x, 1.7, 0], [x * 0.5, 1.95, -0.1], [x * 0.3, 1.9, -0.2]]} color={P.dark} lineWidth={1.2} />
+            <Line
+              points={(() => {
+                const w = moduleWorld(ind, 0.1);
+                const end: [number, number, number] = [w[0] - 0.6, w[1], w[2] + 0.6];
+                return [[x, 1.7, 0], [x, 2.1, 0.4], [(x + end[0]) / 2, 1.6, (end[2]) / 2 + 0.3], end];
+              })()}
+              color={["#ef4444", "#facc15", "#3b82f6", "#22c55e"][PROBES.findIndex((p) => p.ind === ind)]!}
+              lineWidth={1.6}
+            />
           </group>
         );
       })}
@@ -171,10 +165,10 @@ function Pin({ ind }: { ind: Indicator }) {
 }
 
 const PIN_POS: Record<Indicator, [number, number, number]> = {
-  ph: [-0.3, 1.9, 0.9],
-  turbidity_ntu: [-1.1, 0.6, 1.1],
-  tds_mgl: [1.7, 1.1, 0.2],
-  temp_c: [1.9, 0.3, -0.1],
+  ph: moduleWorld("ph", 0.9),
+  turbidity_ntu: moduleWorld("turbidity_ntu", 1.1),
+  tds_mgl: moduleWorld("tds_mgl", 0.5),
+  temp_c: moduleWorld("temp_c", 0.3),
 };
 const pinEls: Partial<Record<Indicator, HTMLDivElement | null>> = {};
 
@@ -240,13 +234,13 @@ function Packets() {
       </group>
       {/* queued packets at the device */}
       {Array.from({ length: Math.min(buffered, 12) }).map((_, i) => (
-        <mesh key={i} position={[0.15 + (i % 6) * 0.15, 2.75 + Math.floor(i / 6) * 0.15, -0.3]}>
+        <mesh key={i} position={[ESP_ANTENNA[0] - 0.4 + (i % 6) * 0.15, 0.75 + Math.floor(i / 6) * 0.15, ESP_ANTENNA[2]]}>
           <boxGeometry args={[0.1, 0.1, 0.1]} />
           <meshBasicMaterial color={P.amber} toneMapped={false} />
         </mesh>
       ))}
       {buffered > 0 && (
-        <Html position={[0.6, 3.25, -0.3]} center>
+        <Html position={[ESP_ANTENNA[0], 1.3, ESP_ANTENNA[2]]} center>
           <div className="panel whitespace-nowrap px-2 py-1 font-num text-[11px] text-st-concern">{buffered} buffered</div>
         </Html>
       )}
@@ -258,7 +252,7 @@ function CloudAndPhone() {
   const sendLed = useSim((s) => s.sendLed);
   return (
     <>
-      <group position={[2.6, 1.3, 1.4]}>
+      <group position={CLOUD}>
         <RoundedBox args={[1.2, 0.5, 1.2]} radius={0.08} position={[0, -0.95, 0]}>
           <meshStandardMaterial color={P.body} />
         </RoundedBox>
@@ -269,7 +263,7 @@ function CloudAndPhone() {
           </mesh>
         ))}
       </group>
-      <group position={[2.6, 0.32, 2.6]} rotation={[-Math.PI / 2.4, 0, 0]}>
+      <group position={[3.2, 0.32, 0.3]} rotation={[-Math.PI / 2.4, 0, 0]}>
         <RoundedBox args={[0.45, 0.85, 0.05]} radius={0.04}>
           <meshStandardMaterial color={P.dark} />
         </RoundedBox>
@@ -322,6 +316,7 @@ export default function Scene() {
         <Pipe points={[[-2, 2.1, -1], [-2, 1.1, -1], [-0.5, 1.1, -0.6], [0.15, 1.1, -0.6]]} />
         <Pipe points={[[0.6, 0.35, -0.6], [0.6, 0.1, 0.6], [-1.2, 0.1, 1.8]]} color={P.dark} r={0.06} />
         <FlowCell />
+        <SensorBoard />
         <CloudAndPhone />
 
         <Line points={PATH} color={P.glow} lineWidth={1.5} transparent opacity={0.7} />
