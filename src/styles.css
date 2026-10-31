@@ -183,3 +183,30 @@
 @utility glow-dot {
   box-shadow: 0 0 10px 1px currentColor;
 }
+
+@layer components {
+.st-bg-normal { background: var(--st-normal); }
+.st-text-normal { color: var(--st-normal); }
+.st-ring-normal { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--st-normal) 45%, transparent); }
+.st-tag-normal { background: var(--st-normal); color: var(--background); box-shadow: 0 0 18px color-mix(in oklab, var(--st-normal) 60%, transparent); }
+.st-bg-concern { background: var(--st-concern); }
+.st-text-concern { color: var(--st-concern); }
+.st-ring-concern { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--st-concern) 45%, transparent); }
+.st-tag-concern { background: var(--st-concern); color: var(--background); box-shadow: 0 0 18px color-mix(in oklab, var(--st-concern) 60%, transparent); }
+.st-bg-strong { background: var(--st-strong); }
+.st-text-strong { color: var(--st-strong); }
+.st-ring-strong { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--st-strong) 45%, transparent); }
+.st-tag-strong { background: var(--st-strong); color: var(--background); box-shadow: 0 0 18px color-mix(in oklab, var(--st-strong) 60%, transparent); }
+.st-bg-device { background: var(--st-device); }
+.st-text-device { color: var(--st-device); }
+.st-ring-device { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--st-device) 45%, transparent); }
+.st-tag-device { background: var(--st-device); color: var(--background); box-shadow: 0 0 18px color-mix(in oklab, var(--st-device) 60%, transparent); }
+.st-bg-nodata { background: var(--st-nodata); }
+.st-text-nodata { color: var(--st-nodata); }
+.st-ring-nodata { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--st-nodata) 45%, transparent); }
+.st-tag-nodata { background: var(--st-nodata); color: var(--background); box-shadow: 0 0 18px color-mix(in oklab, var(--st-nodata) 60%, transparent); }
+.st-bg-learning { background: var(--st-learning); }
+.st-text-learning { color: var(--st-learning); }
+.st-ring-learning { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--st-learning) 45%, transparent); }
+.st-tag-learning { background: var(--st-learning); color: var(--background); box-shadow: 0 0 18px color-mix(in oklab, var(--st-learning) 60%, transparent); }
+}
