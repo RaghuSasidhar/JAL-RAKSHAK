@@ -172,7 +172,7 @@ function Pin({ ind }: { ind: Indicator }) {
 
 const PIN_POS: Record<Indicator, [number, number, number]> = {
   ph: [-0.3, 1.9, 0.9],
-  turbidity_ntu: [-0.6, 0.6, 0.9],
+  turbidity_ntu: [-1.1, 0.6, 1.1],
   tds_mgl: [1.7, 1.1, 0.2],
   temp_c: [1.9, 0.3, -0.1],
 };
