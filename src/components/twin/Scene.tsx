@@ -305,7 +305,7 @@ export default function Scene() {
         <Line points={PATH2} color={P.glow} lineWidth={1.5} transparent opacity={0.7} dashed dashSize={0.1} gapSize={0.08} />
         <Packets />
 
-        <Pin ind="ph" pos={[-1.2, 1.6, 0.9]} />
+        <Pin ind="ph" pos={[-0.3, 1.9, 0.9]} />
         <Pin ind="turbidity_ntu" pos={[-0.6, 0.6, 0.9]} />
         <Pin ind="tds_mgl" pos={[1.7, 1.1, 0.2]} />
         <Pin ind="temp_c" pos={[1.9, 0.3, -0.1]} />
